@@ -211,22 +211,6 @@ a {
   text-transform: uppercase;
 }
 
-.icon-button {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--on-surface-variant);
-  font-size: 20px;
-}
-
-.icon-button:hover {
-  border-color: var(--border-muted);
-  color: var(--text-primary);
-}
-
 .timer-center {
   display: flex;
   align-items: center;
@@ -695,7 +679,6 @@ a {
 .secondary-action:focus-visible,
 .maximize-action:focus-visible,
 .stepper-controls button:focus-visible,
-.icon-button:focus-visible,
 select:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--primary-container);
@@ -809,7 +792,6 @@ a:focus-visible {
     width: min(76%, 330px);
   }
 
-  .total-card .icon-button,
   .key-badge,
   .maximize-action {
     display: none;

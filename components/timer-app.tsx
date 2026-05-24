@@ -413,9 +413,6 @@ export function TimerApp() {
         <aside className="total-card">
           <div>
             <span className="panel-label">Total Time</span>
-            <button className="icon-button" type="button" onClick={handleFullscreen} aria-label="Fullscreen">
-              ⛶
-            </button>
           </div>
           <strong>{formatTime(totalDuration)}</strong>
         </aside>

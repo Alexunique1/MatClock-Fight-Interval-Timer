@@ -1,4 +1,4 @@
-const CACHE_NAME = "matclock-v2";
+const CACHE_NAME = "matclock-v3";
 const ASSETS = [
   "/",
   "/privacy",
@@ -10,6 +10,9 @@ const ASSETS = [
   "/images/apple-touch-icon.png",
   "/images/icon-192.png",
   "/images/icon-512.png",
+  "/images/badges/app-store.svg",
+  "/images/badges/google-play.png",
+  "/images/badges/microsoft-store.svg",
   "/sounds/start.mp3",
   "/sounds/warning.mp3",
   "/sounds/end.mp3"

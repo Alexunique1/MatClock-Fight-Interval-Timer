@@ -48,12 +48,35 @@ function sanitizeSettings(settings: TimerSettings): TimerSettings {
     prepareSeconds: clamp(Math.round(settings.prepareSeconds), 0, 600),
     roundSeconds: clamp(Math.round(settings.roundSeconds), 10, 3600),
     restSeconds: clamp(Math.round(settings.restSeconds), 0, 1800),
-    warningSeconds: clamp(Math.round(settings.warningSeconds), 0, settings.roundSeconds - 1),
+    warningSeconds: clamp(Math.round(settings.warningSeconds), 0, settings.roundSeconds),
   };
 }
 
 function KeyBadge({ children }: { children: React.ReactNode }) {
   return <span className="key-badge">{children}</span>;
+}
+
+function SocialIcon({ name }: { name: "facebook" | "x" | "instagram" }) {
+  const icons = {
+    facebook: (
+      <path d="M16.7 13.3h-3.1V22H10v-8.7H7.6v-3H10V7.9c0-2.6 1.5-4 4.2-4 .8 0 1.9.1 2.4.3v2.7h-1.4c-1.2 0-1.6.5-1.6 1.6v1.8h2.9l-.5 3Z" />
+    ),
+    x: (
+      <path d="M13.9 10.6 20.8 3h-1.6l-6 6.6L8.4 3H3l7.2 9.9L3 21h1.6l6.3-7 5.1 7h5.4l-7.5-10.4Zm-2.2 2.5-.7-1L5.2 4.2h2.4l4.7 6.5.7 1 6.1 8.3h-2.4l-5-6.9Z" />
+    ),
+    instagram: (
+      <>
+        <path d="M7.1 2.8h9.8c2.4 0 4.3 1.9 4.3 4.3v9.8c0 2.4-1.9 4.3-4.3 4.3H7.1a4.3 4.3 0 0 1-4.3-4.3V7.1c0-2.4 1.9-4.3 4.3-4.3Zm0 1.8a2.5 2.5 0 0 0-2.5 2.5v9.8a2.5 2.5 0 0 0 2.5 2.5h9.8a2.5 2.5 0 0 0 2.5-2.5V7.1a2.5 2.5 0 0 0-2.5-2.5H7.1Z" />
+        <path d="M12 8.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6Zm0 1.8a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm4.7-2.9a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z" />
+      </>
+    ),
+  };
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      {icons[name]}
+    </svg>
+  );
 }
 
 function StepperSetting({
@@ -373,10 +396,16 @@ export function TimerApp() {
           <a href="#timer">Home</a>
           <a href="#settings">{dictionary.settings}</a>
         </nav>
-        <div className="header-social" aria-label="Social placeholders">
-          <a href="#social" aria-label="Facebook">f</a>
-          <a href="#social" aria-label="X">x</a>
-          <a href="#social" aria-label="Instagram">◎</a>
+        <div className="header-social" aria-label="Social links">
+          <a href="#social-facebook" aria-label="Facebook">
+            <SocialIcon name="facebook" />
+          </a>
+          <a href="#social-x" aria-label="X">
+            <SocialIcon name="x" />
+          </a>
+          <a href="#social-instagram" aria-label="Instagram">
+            <SocialIcon name="instagram" />
+          </a>
         </div>
       </header>
 
@@ -393,9 +422,15 @@ export function TimerApp() {
 
         <section className="timer-center" aria-label={dictionary.title}>
           <div className="store-badges" id="stores">
-            <a href="#stores">{dictionary.googlePlay}</a>
-            <a href="#stores">{dictionary.appStore}</a>
-            <a href="#desktop">{dictionary.desktop}</a>
+            <a href="#stores" aria-label="Download on the App Store">
+              <img src="/images/badges/app-store.svg" alt="Download on the App Store" />
+            </a>
+            <a href="#stores" aria-label="Get it on Google Play">
+              <img src="/images/badges/google-play.png" alt="Get it on Google Play" />
+            </a>
+            <a href="#desktop" aria-label="Get it from Microsoft Store">
+              <img src="/images/badges/microsoft-store.svg" alt="Get it from Microsoft Store" />
+            </a>
           </div>
 
           <div className={activeClass}>
@@ -506,7 +541,7 @@ export function TimerApp() {
             disabled={!canEdit}
             displayValue={formatTime(settings.warningSeconds)}
             label={dictionary.warningTime}
-            max={settings.roundSeconds - 1}
+            max={settings.roundSeconds}
             min={0}
             step={5}
             value={settings.warningSeconds}

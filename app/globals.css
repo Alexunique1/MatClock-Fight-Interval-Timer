@@ -809,6 +809,11 @@ a:focus-visible {
     width: min(76%, 330px);
   }
 
+  .key-badge,
+  .maximize-action {
+    display: none;
+  }
+
   .setting-stepper {
     min-height: 60px;
   }

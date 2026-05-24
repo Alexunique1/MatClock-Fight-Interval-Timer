@@ -799,6 +799,16 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .control-row {
+    width: min(76%, 330px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .maximize-action {
+    width: min(76%, 330px);
+  }
+
   .setting-stepper {
     min-height: 60px;
   }

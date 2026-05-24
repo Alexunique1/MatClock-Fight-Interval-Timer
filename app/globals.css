@@ -809,6 +809,7 @@ a:focus-visible {
     width: min(76%, 330px);
   }
 
+  .total-card .icon-button,
   .key-badge,
   .maximize-action {
     display: none;

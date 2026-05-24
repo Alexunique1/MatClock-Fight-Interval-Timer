@@ -183,8 +183,7 @@ a {
 .panel-label,
 .setting-stepper > span,
 .round-label,
-.next-label,
-.language-select span {
+.next-label {
   color: var(--on-surface-variant);
   font-family: var(--font-mono);
   font-size: 14px;
@@ -586,18 +585,6 @@ a {
   font-family: var(--font-mono);
   font-size: 12px;
   text-transform: uppercase;
-}
-
-.language-select span {
-  display: grid;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-  border: 1px solid var(--border-muted);
-  border-radius: 999px;
-  color: var(--text-primary);
-  font-size: 15px;
-  line-height: 1;
 }
 
 .language-select select {

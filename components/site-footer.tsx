@@ -24,7 +24,6 @@ export function SiteFooter({ dictionary, locale, onLocaleChange }: SiteFooterPro
         </div>
 
         <label className="language-select">
-          <span aria-hidden>◎</span>
           <select value={locale} onChange={(event) => onLocaleChange(event.target.value as Locale)}>
             {locales.map((item) => (
               <option key={item} value={item}>

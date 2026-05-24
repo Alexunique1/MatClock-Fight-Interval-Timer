@@ -393,8 +393,8 @@ export function TimerApp() {
           <img src="/images/logo.png" alt="MatClock" />
         </a>
         <nav className="desktop-nav" aria-label="Primary">
-          <a href="#timer">Home</a>
-          <a href="#about">About</a>
+          <a href="#timer">{dictionary.home}</a>
+          <a href="#about">{dictionary.about}</a>
         </nav>
         <div className="header-social" aria-label="Social links">
           <a href="#social-facebook" aria-label="Facebook">
@@ -412,7 +412,7 @@ export function TimerApp() {
       <section className="timer-dashboard" id="timer">
         <aside className="total-card">
           <div>
-            <span className="panel-label">Total Time</span>
+            <span className="panel-label">{dictionary.totalTime}</span>
           </div>
           <strong>{formatTime(totalDuration)}</strong>
         </aside>
@@ -473,7 +473,7 @@ export function TimerApp() {
               </div>
 
               <button className="maximize-action" type="button" onClick={handleFullscreen}>
-                ⛶ {isFullscreen ? "Minimize" : "Maximize"} <KeyBadge>F</KeyBadge>
+                ⛶ {isFullscreen ? dictionary.minimize : dictionary.maximize} <KeyBadge>F</KeyBadge>
               </button>
             </div>
           </div>

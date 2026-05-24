@@ -394,7 +394,7 @@ export function TimerApp() {
         </a>
         <nav className="desktop-nav" aria-label="Primary">
           <a href="#timer">Home</a>
-          <a href="#settings">{dictionary.settings}</a>
+          <a href="#about">About</a>
         </nav>
         <div className="header-social" aria-label="Social links">
           <a href="#social-facebook" aria-label="Facebook">
@@ -473,7 +473,7 @@ export function TimerApp() {
               </div>
 
               <button className="maximize-action" type="button" onClick={handleFullscreen}>
-                ⛶ Maximize <KeyBadge>F</KeyBadge>
+                ⛶ {isFullscreen ? "Minimize" : "Maximize"} <KeyBadge>F</KeyBadge>
               </button>
             </div>
           </div>

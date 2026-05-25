@@ -238,8 +238,12 @@ button:disabled {
 
 .timer-core .round-label {
   color: var(--on-surface-variant);
-  font-size: clamp(1.35rem, 1.9vw, 2.45rem);
+  max-width: 92%;
+  overflow: hidden;
+  font-size: clamp(1.15rem, 1.45vw, 1.9rem);
   letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .timer-face {

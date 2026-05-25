@@ -1,5 +1,9 @@
 node_modules
 .next
+.vite
+dist
+target
+**/src-tauri/gen/
 out
 .vercel
 .npm-cache

@@ -1,0 +1,293 @@
+:root {
+  --background: #202020;
+  --surface: #282828;
+  --surface-low: #242424;
+  --surface-high: #303030;
+  --border: #383838;
+  --text: #f8f8f8;
+  --muted: #aaa;
+  --primary: #d6272a;
+  --primary-hover: #e33336;
+  --focus: #4fc3ff;
+  --round: #08b817;
+  --rest: #aa3a00;
+  --warning: #bed600;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--background);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-width: 960px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-frame {
+  display: grid;
+  min-height: 100vh;
+  padding: 8px 14px 10px;
+  background: var(--background);
+  grid-template-rows: 28px 58px minmax(0, 1fr) 52px;
+  gap: 12px;
+}
+
+.window-titlebar {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 28px;
+  user-select: none;
+}
+
+.quick-stats {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.info-card {
+  position: relative;
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--surface-low);
+}
+
+.info-card span,
+.profile-picker button span {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.info-card strong,
+.profile-picker button strong {
+  color: var(--text);
+  font-size: 23px;
+  line-height: 1.1;
+}
+
+.profile-picker > button {
+  display: grid;
+  width: 100%;
+  min-height: 58px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+}
+
+.profile-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 50%;
+  display: grid;
+  width: 190px;
+  padding: 7px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-high);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  transform: translateX(-50%);
+}
+
+.profile-menu button {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 10px 16px;
+  text-align: left;
+}
+
+.profile-menu button:hover,
+.profile-menu button.is-active {
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 800;
+}
+
+.timer-stage {
+  display: grid;
+  min-height: 0;
+  align-content: center;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 30% 45%, rgba(0, 230, 118, 0.08), transparent 28%),
+    radial-gradient(circle at 70% 45%, rgba(220, 38, 38, 0.08), transparent 30%),
+    var(--surface);
+  text-align: center;
+}
+
+.phase-label {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.2vw, 1.4rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.desktop-timer {
+  color: var(--text);
+  font-family: Consolas, "JetBrains Mono", monospace;
+  font-size: clamp(12rem, 28vw, 32rem);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 0.86;
+}
+
+.round-counter {
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.phase-round .desktop-timer {
+  color: var(--text);
+}
+
+.phase-rest .phase-label,
+.phase-rest .desktop-timer {
+  color: #ff7f55;
+}
+
+.phase-warning .phase-label,
+.phase-warning .desktop-timer {
+  color: var(--warning);
+}
+
+.bottom-actions {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.primary-action,
+.secondary-action,
+.text-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.primary-action {
+  background: var(--primary);
+}
+
+.primary-action:hover {
+  background: var(--primary-hover);
+}
+
+.secondary-action,
+.text-button {
+  background: var(--surface-high);
+}
+
+.secondary-action:hover,
+.text-button:hover {
+  background: #3a3a3a;
+}
+
+.settings-view {
+  display: block;
+  padding: 8px 28px 32px;
+}
+
+.settings-shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 34px 0;
+}
+
+.settings-shell h1 {
+  margin: 28px 0 14px;
+  font-size: 36px;
+}
+
+.settings-shell h2 {
+  margin: 34px 0 14px;
+  font-size: 26px;
+}
+
+.muted {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.settings-grid {
+  display: grid;
+  margin-top: 28px;
+  gap: 10px;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 20px;
+  align-items: center;
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 18px 20px;
+}
+
+.profile-card strong {
+  font-size: 18px;
+}
+
+.profile-card span {
+  color: var(--muted);
+}
+
+.sound-row {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0 20px;
+  text-align: left;
+}
+
+.sound-row:hover {
+  background: var(--surface-high);
+}
+
+.sound-row span {
+  color: var(--muted);
+}
+
+.sound-row strong {
+  font-size: 16px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}

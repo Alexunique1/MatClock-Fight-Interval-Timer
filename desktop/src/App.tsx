@@ -883,13 +883,12 @@ export function App() {
       <header className="window-titlebar">
         <strong>MatClock</strong>
         <nav>
-          <button type="button" onClick={() => setView("timer")}>Timer</button>
           <button type="button" onClick={() => setView("settings")}>Settings</button>
         </nav>
       </header>
 
       <section className="timer-dashboard">
-        <aside className="total-card" style={{ minHeight: activeProfile.theme.totalTimeHeight }}>
+        <aside className="total-card">
           <span className="panel-label">Total time</span>
           <strong>
             {formatTime(
@@ -924,30 +923,31 @@ export function App() {
               <div className="timer-face" aria-live="polite">
                 {formatTime(snapshot.remaining)}
               </div>
-              <div className="control-row">
-                {(runState === "idle" || runState === "finished") && (
-                  <button className="primary-action" type="button" onClick={handleStart}>
-                    {activeProfile.theme.startButtonText} <KeyBadge>Space</KeyBadge>
-                  </button>
-                )}
-                {runState === "running" && (
-                  <button className="primary-action is-running" type="button" onClick={handlePause}>
-                    Pause <KeyBadge>Space</KeyBadge>
-                  </button>
-                )}
-                {runState === "paused" && (
-                  <button className="primary-action" type="button" onClick={handleResume}>
-                    Resume <KeyBadge>Space</KeyBadge>
-                  </button>
-                )}
-                <button className="secondary-action" type="button" onClick={handleReset}>
-                  Reset <KeyBadge>R</KeyBadge>
-                </button>
-              </div>
-              <button className="maximize-action" type="button" onClick={handleFullscreen}>
-                Maximize <KeyBadge>F</KeyBadge>
-              </button>
             </div>
+          </div>
+
+          <div className="control-row">
+            {(runState === "idle" || runState === "finished") && (
+              <button className="primary-action" type="button" onClick={handleStart}>
+                {activeProfile.theme.startButtonText} <KeyBadge>Space</KeyBadge>
+              </button>
+            )}
+            {runState === "running" && (
+              <button className="primary-action is-running" type="button" onClick={handlePause}>
+                Pause <KeyBadge>Space</KeyBadge>
+              </button>
+            )}
+            {runState === "paused" && (
+              <button className="primary-action" type="button" onClick={handleResume}>
+                Resume <KeyBadge>Space</KeyBadge>
+              </button>
+            )}
+            <button className="secondary-action" type="button" onClick={handleReset}>
+              Reset <KeyBadge>R</KeyBadge>
+            </button>
+            <button className="maximize-action" type="button" onClick={handleFullscreen}>
+              Maximize <KeyBadge>F</KeyBadge>
+            </button>
           </div>
         </section>
 

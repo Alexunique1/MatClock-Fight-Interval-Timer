@@ -104,22 +104,27 @@ button:disabled {
 }
 
 .timer-dashboard {
+  position: relative;
   display: grid;
   width: min(100%, 1640px);
   min-height: 0;
   margin: 0 auto;
-  padding: 34px 0 0;
-  gap: 18px;
-  grid-template-columns: minmax(260px, 0.42fr) minmax(640px, 1fr);
+  padding: 30px 0 0;
+  place-items: center;
 }
 
 .total-card {
+  position: absolute;
+  top: 28px;
+  left: 0;
   display: grid;
+  width: 240px;
+  min-height: 112px;
   align-content: center;
-  gap: 34px;
+  gap: 16px;
   border: 1px solid var(--border-muted);
   background: rgba(24, 24, 27, 0.88);
-  padding: 28px 30px;
+  padding: 20px 22px;
 }
 
 .panel-label,
@@ -137,7 +142,7 @@ button:disabled {
 .total-card strong {
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: clamp(3.3rem, 5vw, 6.2rem);
+  font-size: 2.8rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
   letter-spacing: -0.05em;
@@ -145,16 +150,18 @@ button:disabled {
 }
 
 .timer-center {
-  display: grid;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   min-height: 0;
-  place-items: center;
 }
 
 .timer-circle {
   --phase: var(--primary-container);
   position: relative;
   display: grid;
-  width: min(760px, 58vw, 78vh);
+  width: min(690px, 50vw, 70vh);
   aspect-ratio: 1;
   place-items: center;
 }
@@ -229,8 +236,14 @@ button:disabled {
   text-align: center;
 }
 
+.timer-core .round-label {
+  color: var(--on-surface-variant);
+  font-size: clamp(1.35rem, 1.9vw, 2.45rem);
+  letter-spacing: 0.08em;
+}
+
 .timer-face {
-  margin: 12px 0 30px;
+  margin: 24px 0 0;
   color: var(--timer-number, var(--text-primary));
   font-family: var(--timer-font), var(--font-mono);
   font-size: clamp(6.5rem, 10.5vw, 11.5rem);
@@ -242,9 +255,10 @@ button:disabled {
 
 .control-row {
   display: grid;
-  width: min(430px, 86%);
-  gap: 14px;
-  grid-template-columns: 1fr 1fr;
+  width: min(700px, 58vw);
+  gap: 16px;
+  grid-template-columns: 1.55fr 1fr 1fr;
+  margin-top: 24px;
 }
 
 .primary-action,
@@ -322,9 +336,9 @@ button:disabled {
 }
 
 .maximize-action {
-  width: min(208px, 42%);
-  min-height: 40px;
-  margin-top: 14px;
+  width: auto;
+  min-height: 46px;
+  margin-top: 0;
   color: var(--on-surface-variant);
 }
 

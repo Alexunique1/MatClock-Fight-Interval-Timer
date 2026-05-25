@@ -1,6 +1,6 @@
 [package]
 name = "matclock-desktop"
-version = "0.1.0"
+version = "0.1.1"
 description = "MatClock Fight Interval Timer desktop app"
 authors = ["MatClock"]
 edition = "2021"

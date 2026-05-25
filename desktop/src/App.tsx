@@ -110,7 +110,6 @@ export function App() {
   const [view, setView] = useState<View>("timer");
   const [profiles, setProfiles] = useState<Profile[]>(defaultProfiles);
   const [activeProfileId, setActiveProfileId] = useState(defaultProfiles[1].id);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [selectedSoundEvent, setSelectedSoundEvent] = useState<SoundEvent>("roundStart");
   const [language, setLanguage] = useState("English");
   const [elapsed, setElapsed] = useState(0);
@@ -162,7 +161,6 @@ export function App() {
   );
 
   const displayedPhase: TimerPhase | "paused" = runState === "paused" ? "paused" : snapshot.phase;
-  const canEdit = runState === "idle" || runState === "finished";
   const ringProgress = Math.max(0.001, snapshot.segmentProgress);
   const totalLeft = Math.max(0, totalDuration - elapsed);
   const timerStyle = {
@@ -426,7 +424,6 @@ export function App() {
   const handleSelectProfile = useCallback(
     (profileId: string) => {
       setActiveProfileId(profileId);
-      setProfileMenuOpen(false);
       resetSoundMarkers();
       setElapsed(0);
       setPausedElapsed(0);
@@ -954,78 +951,6 @@ export function App() {
           </div>
         </section>
 
-        <aside className="settings-panel">
-          <div className="profile-picker">
-            <button type="button" onClick={() => setProfileMenuOpen((open) => !open)}>
-              <span>Profile</span>
-              <strong>{activeProfile.name}</strong>
-            </button>
-            {profileMenuOpen && (
-              <div className="profile-menu">
-                {profiles.map((profile) => (
-                  <button
-                    className={profile.id === activeProfile.id ? "is-active" : undefined}
-                    key={profile.id}
-                    type="button"
-                    onClick={() => handleSelectProfile(profile.id)}
-                  >
-                    {profile.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <StepperSetting
-            disabled={!canEdit}
-            displayValue={String(activeProfile.timer.rounds).padStart(2, "0")}
-            label="Rounds"
-            max={99}
-            min={1}
-            value={activeProfile.timer.rounds}
-            onChange={(rounds) => updateTimer({ rounds })}
-          />
-          <StepperSetting
-            disabled={!canEdit}
-            displayValue={formatTime(activeProfile.timer.roundSeconds)}
-            label="Round"
-            max={7200}
-            min={1}
-            step={15}
-            value={activeProfile.timer.roundSeconds}
-            onChange={(roundSeconds) => updateTimer({ roundSeconds })}
-          />
-          <StepperSetting
-            disabled={!canEdit}
-            displayValue={formatTime(activeProfile.timer.restSeconds)}
-            label="Rest"
-            max={3600}
-            min={0}
-            step={5}
-            value={activeProfile.timer.restSeconds}
-            onChange={(restSeconds) => updateTimer({ restSeconds })}
-          />
-          <StepperSetting
-            disabled={!canEdit}
-            displayValue={formatTime(activeProfile.timer.prepareSeconds)}
-            label="Prepare"
-            max={3600}
-            min={0}
-            step={5}
-            value={activeProfile.timer.prepareSeconds}
-            onChange={(prepareSeconds) => updateTimer({ prepareSeconds })}
-          />
-          <StepperSetting
-            disabled={!canEdit}
-            displayValue={formatTime(activeProfile.timer.warningSeconds)}
-            label="Warning"
-            max={activeProfile.timer.roundSeconds}
-            min={0}
-            step={5}
-            value={activeProfile.timer.warningSeconds}
-            onChange={(warningSeconds) => updateTimer({ warningSeconds })}
-          />
-        </aside>
       </section>
     </main>
   );
@@ -1264,40 +1189,5 @@ function ColorRow({
       </span>
       <input type="color" value={value} onChange={(event) => onChange(event.target.value)} />
     </label>
-  );
-}
-
-function StepperSetting({
-  disabled,
-  displayValue,
-  label,
-  max,
-  min,
-  step = 1,
-  value,
-  onChange,
-}: {
-  disabled?: boolean;
-  displayValue: string;
-  label: string;
-  max: number;
-  min: number;
-  step?: number;
-  value: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <div className="setting-stepper">
-      <span>{label}</span>
-      <div className="stepper-controls">
-        <button disabled={disabled} type="button" onClick={() => onChange(Math.max(min, value - step))}>
-          -
-        </button>
-        <strong>{displayValue}</strong>
-        <button disabled={disabled} type="button" onClick={() => onChange(Math.min(max, value + step))}>
-          +
-        </button>
-      </div>
-    </div>
   );
 }

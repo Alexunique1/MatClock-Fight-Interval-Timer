@@ -110,7 +110,7 @@ button:disabled {
   margin: 0 auto;
   padding: 34px 0 0;
   gap: 18px;
-  grid-template-columns: minmax(220px, 0.9fr) minmax(470px, 1.55fr) minmax(280px, 0.95fr);
+  grid-template-columns: minmax(260px, 0.42fr) minmax(640px, 1fr);
 }
 
 .total-card {
@@ -154,7 +154,7 @@ button:disabled {
   --phase: var(--primary-container);
   position: relative;
   display: grid;
-  width: min(710px, 48vw, 76vh);
+  width: min(760px, 58vw, 78vh);
   aspect-ratio: 1;
   place-items: center;
 }
@@ -693,11 +693,6 @@ button:disabled {
   }
 
   .timer-circle {
-    width: min(560px, 74vw);
-  }
-
-  .settings-panel {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(620px, 78vw);
   }
 }

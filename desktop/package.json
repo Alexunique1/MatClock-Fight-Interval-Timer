@@ -1,6 +1,6 @@
 {
   "name": "matclock-desktop",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.9.0",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

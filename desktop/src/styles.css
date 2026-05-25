@@ -62,7 +62,24 @@ button:disabled {
     radial-gradient(circle at 48% 47%, rgba(255, 255, 255, 0.11), transparent 34%),
     linear-gradient(135deg, transparent 0 27%, rgba(255, 255, 255, 0.025) 27% 50%, transparent 50% 73%, rgba(255, 255, 255, 0.025) 73%),
     var(--background);
-  grid-template-rows: 42px minmax(0, 1fr);
+  grid-template-rows: var(--top-row-height, 42px) minmax(0, 1fr);
+}
+
+.app-frame.theme-light {
+  --background: #f4f4f5;
+  --surface: #ffffff;
+  --surface-anthracite: #f7f7f8;
+  --surface-container: #ffffff;
+  --surface-container-high: #ececef;
+  --surface-container-highest: #ffffff;
+  --border-muted: #d4d4d8;
+  --outline-variant: #d8aaa3;
+  --text-primary: #111113;
+  --on-surface: #27272a;
+  --on-surface-variant: #743b34;
+  background:
+    radial-gradient(circle at 48% 47%, rgba(0, 0, 0, 0.08), transparent 34%),
+    #f4f4f5;
 }
 
 .window-titlebar {
@@ -119,7 +136,7 @@ button:disabled {
   left: 0;
   display: grid;
   width: 240px;
-  min-height: 112px;
+  min-height: var(--total-time-height, 112px);
   align-content: center;
   gap: 16px;
   border: 1px solid var(--border-muted);
@@ -265,13 +282,24 @@ button:disabled {
   margin-top: 24px;
 }
 
+.voice-hint {
+  max-width: min(700px, 58vw);
+  margin: 18px 0 0;
+  color: var(--on-surface-variant);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .primary-action,
 .secondary-action,
 .maximize-action,
 .accent-small,
 .wide-reset,
 .stepper-controls button {
-  min-height: 46px;
+  min-height: var(--button-height, 46px);
   border: 1px solid var(--border-muted);
   border-radius: 14px;
   background: transparent;
@@ -520,6 +548,46 @@ button:disabled {
   color: var(--text-primary);
   padding: 14px 20px;
   text-align: left;
+}
+
+.profile-select-row input[type="text"] {
+  width: min(340px, 44vw);
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 900;
+  padding: 0 8px;
+}
+
+.profile-select-row input[type="text"]:focus {
+  border-color: var(--border-muted);
+  background: var(--surface-container-highest);
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.profile-actions button {
+  min-height: 34px;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  background: var(--surface-container-high);
+  color: var(--text-primary);
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.profile-actions button:hover:not(:disabled) {
+  border-color: var(--text-primary);
 }
 
 .settings-row:last-child,

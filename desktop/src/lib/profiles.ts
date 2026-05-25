@@ -39,6 +39,7 @@ export function createProfile(
       roundCountdownSeconds: 0,
       restCountdownSeconds: 0,
       voiceControl: false,
+      voiceName: "",
     },
     display: {
       showTotalTime: false,
@@ -86,6 +87,13 @@ export function saveProfiles(profiles: Profile[]) {
 function normalizeProfile(profile: Profile): Profile {
   return {
     ...profile,
+    voice: {
+      announceRound: profile.voice?.announceRound ?? true,
+      roundCountdownSeconds: profile.voice?.roundCountdownSeconds ?? 0,
+      restCountdownSeconds: profile.voice?.restCountdownSeconds ?? 0,
+      voiceControl: profile.voice?.voiceControl ?? false,
+      voiceName: profile.voice?.voiceName ?? "",
+    },
     sounds: {
       roundStart: normalizeSoundId(profile.sounds?.roundStart, defaultSoundSettings.roundStart),
       restStart: normalizeSoundId(profile.sounds?.restStart, defaultSoundSettings.restStart),

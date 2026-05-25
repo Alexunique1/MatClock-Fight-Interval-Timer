@@ -7,7 +7,9 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { open } from "@tauri-apps/plugin-dialog";
 import {
   buildSegments,
   clamp,
@@ -41,6 +43,33 @@ type View =
   | "timerScreen";
 
 const LANGUAGE_STORAGE_KEY = "matclock-desktop-language";
+const CUSTOM_SOUNDS_STORAGE_KEY = "matclock-desktop-custom-sounds";
+const APP_VERSION = "0.1.5";
+
+type LanguageOption = {
+  id: string;
+  label: string;
+  speechLang: string;
+};
+
+type CustomSound = {
+  id: string;
+  label: string;
+  path: string;
+};
+
+type DesktopSpeechRecognition = {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onerror: (() => void) | null;
+  onresult: ((event: {
+    resultIndex: number;
+    results: ArrayLike<ArrayLike<{ transcript: string }>>;
+  }) => void) | null;
+  start: () => void;
+  stop: () => void;
+};
 
 const phaseLabels: Record<TimerPhase | "paused", string> = {
   idle: "Ready",
@@ -52,25 +81,25 @@ const phaseLabels: Record<TimerPhase | "paused", string> = {
   paused: "Paused",
 };
 
-const languages = [
-  "English",
-  "Espanol",
-  "Deutsch",
-  "Polish",
-  "Russkii",
-  "Francais",
-  "Chinese Traditional",
-  "Chinese Simplified",
-  "Thai",
-  "Arabic",
-  "Hindi",
-  "Portuguese",
-  "Ukrainian",
-  "Belarusian",
-  "Bosanski",
-  "Italiano",
-  "Suomi",
-  "Tieng Viet",
+const languages: LanguageOption[] = [
+  { id: "en", label: "English", speechLang: "en-US" },
+  { id: "es", label: "Espanol", speechLang: "es-ES" },
+  { id: "de", label: "Deutsch", speechLang: "de-DE" },
+  { id: "pl", label: "Polish", speechLang: "pl-PL" },
+  { id: "ru", label: "Russkii", speechLang: "ru-RU" },
+  { id: "fr", label: "Francais", speechLang: "fr-FR" },
+  { id: "zh-Hant", label: "Chinese Traditional", speechLang: "zh-TW" },
+  { id: "zh-Hans", label: "Chinese Simplified", speechLang: "zh-CN" },
+  { id: "th", label: "Thai", speechLang: "th-TH" },
+  { id: "ar", label: "Arabic", speechLang: "ar-SA" },
+  { id: "hi", label: "Hindi", speechLang: "hi-IN" },
+  { id: "pt", label: "Portuguese", speechLang: "pt-PT" },
+  { id: "uk", label: "Ukrainian", speechLang: "uk-UA" },
+  { id: "be", label: "Belarusian", speechLang: "be-BY" },
+  { id: "bs", label: "Bosanski", speechLang: "bs-BA" },
+  { id: "it", label: "Italiano", speechLang: "it-IT" },
+  { id: "fi", label: "Suomi", speechLang: "fi-FI" },
+  { id: "vi", label: "Tieng Viet", speechLang: "vi-VN" },
 ];
 
 const timerFonts = ["JetBrains Mono", "Consolas", "Agency FB", "Arial Black"];
@@ -106,14 +135,41 @@ function partsToSeconds(minutes: number, seconds: number) {
   return Math.max(0, Math.round(minutes) * 60 + Math.round(seconds));
 }
 
+function normalizeLanguage(value: string | null) {
+  if (!value) {
+    return "en";
+  }
+
+  return (
+    languages.find((language) => language.id === value || language.label === value)?.id ??
+    "en"
+  );
+}
+
+function getLanguage(languageId: string) {
+  return languages.find((language) => language.id === languageId) ?? languages[0];
+}
+
+function readCustomSounds() {
+  try {
+    const saved = localStorage.getItem(CUSTOM_SOUNDS_STORAGE_KEY);
+    return saved ? (JSON.parse(saved) as CustomSound[]) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function App() {
   const [view, setView] = useState<View>("timer");
   const [profiles, setProfiles] = useState<Profile[]>(defaultProfiles);
   const [activeProfileId, setActiveProfileId] = useState(defaultProfiles[1].id);
   const [selectedSoundEvent, setSelectedSoundEvent] = useState<SoundEvent>("roundStart");
-  const [language, setLanguage] = useState("English");
+  const [customSounds, setCustomSounds] = useState<CustomSound[]>([]);
+  const [language, setLanguage] = useState("en");
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [elapsed, setElapsed] = useState(0);
   const [runState, setRunState] = useState<RunState>("idle");
+  const [voiceHint, setVoiceHint] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [pausedElapsed, setPausedElapsed] = useState(0);
   const intervalRef = useRef<number | null>(null);
@@ -122,15 +178,19 @@ export function App() {
   const warnedRounds = useRef<Set<number>>(new Set());
   const restWarnedRounds = useRef<Set<number>>(new Set());
   const intervalSignals = useRef<Set<string>>(new Set());
+  const announcedRounds = useRef<Set<number>>(new Set());
+  const spokenCountdowns = useRef<Set<string>>(new Set());
   const finishPlayed = useRef(false);
+  const wakeLock = useRef<WakeLockSentinel | null>(null);
 
   useEffect(() => {
     const loadedProfiles = loadProfiles();
     const savedActiveProfile = localStorage.getItem(ACTIVE_PROFILE_KEY);
     const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
     setProfiles(loadedProfiles);
+    setCustomSounds(readCustomSounds());
     setActiveProfileId(savedActiveProfile ?? loadedProfiles[0]?.id ?? defaultProfiles[0].id);
-    setLanguage(savedLanguage ?? "English");
+    setLanguage(normalizeLanguage(savedLanguage));
   }, []);
 
   useEffect(() => {
@@ -145,10 +205,26 @@ export function App() {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   }, [language]);
 
+  useEffect(() => {
+    localStorage.setItem(CUSTOM_SOUNDS_STORAGE_KEY, JSON.stringify(customSounds));
+  }, [customSounds]);
+
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) {
+      return undefined;
+    }
+
+    const loadVoices = () => setVoices(window.speechSynthesis.getVoices());
+    loadVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+  }, []);
+
   const activeProfile = useMemo(
     () => profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0] ?? defaultProfiles[0],
     [activeProfileId, profiles],
   );
+  const activeLanguage = useMemo(() => getLanguage(language), [language]);
 
   const totalDuration = useMemo(() => getTotalDuration(activeProfile), [activeProfile]);
   const snapshot = useMemo(() => getTimerSnapshot(activeProfile, elapsed), [activeProfile, elapsed]);
@@ -169,6 +245,9 @@ export function App() {
     "--start-color": activeProfile.theme.startButtonColor,
     "--timer-font": activeProfile.theme.timerFont,
     "--card-font": activeProfile.theme.cardFont,
+    "--top-row-height": `${activeProfile.theme.topRowHeight}px`,
+    "--total-time-height": `${activeProfile.theme.totalTimeHeight}px`,
+    "--button-height": `${activeProfile.theme.buttonHeight}px`,
   } as CSSProperties;
 
   const resetSoundMarkers = useCallback(() => {
@@ -176,11 +255,28 @@ export function App() {
     warnedRounds.current = new Set();
     restWarnedRounds.current = new Set();
     intervalSignals.current = new Set();
+    announcedRounds.current = new Set();
+    spokenCountdowns.current = new Set();
     finishPlayed.current = false;
   }, []);
 
+  const getSoundFileForId = useCallback(
+    (soundId: string) => {
+      const customSound = customSounds.find((sound) => sound.id === soundId);
+      return customSound ? convertFileSrc(customSound.path) : getSoundFile(soundId);
+    },
+    [customSounds],
+  );
+
+  const getSoundLabel = useCallback(
+    (soundId: string) => {
+      return customSounds.find((sound) => sound.id === soundId)?.label ?? getBuiltInSound(soundId).label;
+    },
+    [customSounds],
+  );
+
   const playSound = useCallback((soundId: string) => {
-    const file = getSoundFile(soundId);
+    const file = getSoundFileForId(soundId);
     if (!file) {
       return;
     }
@@ -193,6 +289,55 @@ export function App() {
 
     audio.currentTime = 0;
     audio.play().catch(() => undefined);
+  }, [getSoundFileForId]);
+
+  const speak = useCallback(
+    (text: string) => {
+      if (!("speechSynthesis" in window) || !text) {
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = activeLanguage.speechLang;
+      utterance.rate = 1;
+      utterance.volume = 1;
+
+      const selectedVoice = voices.find((voice) => voice.name === activeProfile.voice.voiceName);
+      const languageVoice =
+        selectedVoice ??
+        voices.find((voice) => voice.lang.toLowerCase().startsWith(activeLanguage.speechLang.toLowerCase())) ??
+        voices.find((voice) =>
+          voice.lang.toLowerCase().startsWith(activeLanguage.speechLang.slice(0, 2).toLowerCase()),
+        );
+
+      if (languageVoice) {
+        utterance.voice = languageVoice;
+      }
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    },
+    [activeLanguage.speechLang, activeProfile.voice.voiceName, voices],
+  );
+
+  const requestWakeLock = useCallback(async () => {
+    try {
+      if ("wakeLock" in navigator && activeProfile.display.preventSleep) {
+        wakeLock.current = await navigator.wakeLock.request("screen");
+      }
+    } catch {
+      wakeLock.current = null;
+    }
+  }, [activeProfile.display.preventSleep]);
+
+  const releaseWakeLock = useCallback(async () => {
+    try {
+      await wakeLock.current?.release();
+    } catch {
+      // Wake lock can already be released by the OS.
+    } finally {
+      wakeLock.current = null;
+    }
   }, []);
 
   const updateActiveProfile = useCallback(
@@ -259,6 +404,35 @@ export function App() {
     [updateActiveProfile],
   );
 
+  const handleAddCustomSound = useCallback(async () => {
+    const selected = await open({
+      multiple: false,
+      filters: [
+        {
+          name: "Audio",
+          extensions: ["mp3", "wav", "ogg", "m4a"],
+        },
+      ],
+    });
+
+    if (typeof selected !== "string") {
+      return;
+    }
+
+    const pathParts = selected.split(/[\\/]/);
+    const fileName = pathParts[pathParts.length - 1] || "Custom sound";
+    const customSound: CustomSound = {
+      id: `custom:${Date.now()}`,
+      label: fileName.replace(/\.[^.]+$/, ""),
+      path: selected,
+    };
+
+    setCustomSounds((current) => [...current, customSound]);
+    updateSound(selectedSoundEvent, customSound.id);
+    const audio = new Audio(convertFileSrc(selected));
+    audio.play().catch(() => undefined);
+  }, [selectedSoundEvent, updateSound]);
+
   const updateDisplay = useCallback(
     (patch: Partial<Profile["display"]>) => {
       updateActiveProfile((profile) => ({
@@ -312,6 +486,18 @@ export function App() {
   }, [runState, startedAt, totalDuration]);
 
   useEffect(() => {
+    if (runState === "running" && activeProfile.display.preventSleep) {
+      void requestWakeLock();
+      return () => {
+        void releaseWakeLock();
+      };
+    }
+
+    void releaseWakeLock();
+    return undefined;
+  }, [activeProfile.display.preventSleep, releaseWakeLock, requestWakeLock, runState]);
+
+  useEffect(() => {
     if (runState !== "running" || !currentSegment) {
       return;
     }
@@ -321,6 +507,10 @@ export function App() {
       playedSegments.current.add(segmentKey);
       if (currentSegment.phase === "round") {
         playSound(activeProfile.sounds.roundStart);
+        if (activeProfile.voice.announceRound && !announcedRounds.current.has(currentSegment.round)) {
+          announcedRounds.current.add(currentSegment.round);
+          speak(`Round ${currentSegment.round}`);
+        }
       }
       if (currentSegment.phase === "rest") {
         playSound(activeProfile.sounds.restStart);
@@ -339,6 +529,19 @@ export function App() {
     }
 
     if (
+      currentSegment.phase === "round" &&
+      activeProfile.voice.roundCountdownSeconds > 0 &&
+      remaining <= activeProfile.voice.roundCountdownSeconds &&
+      remaining > 0
+    ) {
+      const countdownKey = `round:${currentSegment.round}:${remaining}`;
+      if (!spokenCountdowns.current.has(countdownKey)) {
+        spokenCountdowns.current.add(countdownKey);
+        speak(String(remaining));
+      }
+    }
+
+    if (
       currentSegment.phase === "rest" &&
       activeProfile.timer.restEndWarningSeconds > 0 &&
       remaining <= activeProfile.timer.restEndWarningSeconds &&
@@ -346,6 +549,19 @@ export function App() {
     ) {
       restWarnedRounds.current.add(currentSegment.round);
       playSound(activeProfile.sounds.restWarning);
+    }
+
+    if (
+      currentSegment.phase === "rest" &&
+      activeProfile.voice.restCountdownSeconds > 0 &&
+      remaining <= activeProfile.voice.restCountdownSeconds &&
+      remaining > 0
+    ) {
+      const countdownKey = `rest:${currentSegment.round}:${remaining}`;
+      if (!spokenCountdowns.current.has(countdownKey)) {
+        spokenCountdowns.current.add(countdownKey);
+        speak(String(remaining));
+      }
     }
 
     if (currentSegment.phase === "round" && activeProfile.timer.intervalSignalSeconds > 0) {
@@ -360,7 +576,7 @@ export function App() {
         playSound(activeProfile.sounds.intervalSignal);
       }
     }
-  }, [activeProfile, currentSegment, elapsed, playSound, runState]);
+  }, [activeProfile, currentSegment, elapsed, playSound, runState, speak]);
 
   useEffect(() => {
     if (runState === "finished" && !finishPlayed.current) {
@@ -456,6 +672,53 @@ export function App() {
     setActiveProfileId(nextProfile.id);
   }, [activeProfile, profiles.length]);
 
+  const handleRenameProfile = useCallback((profileId: string, name: string) => {
+    const nextName = name.trim();
+    setProfiles((current) =>
+      current.map((profile) =>
+        profile.id === profileId ? { ...profile, name: nextName || profile.name } : profile,
+      ),
+    );
+  }, []);
+
+  const handleDuplicateProfile = useCallback((profile: Profile) => {
+    const duplicate = {
+      ...profile,
+      id: `custom-${Date.now()}`,
+      name: `${profile.name} copy`,
+      flexibleRounds: [...profile.flexibleRounds],
+      sounds: { ...profile.sounds },
+      voice: { ...profile.voice },
+      display: { ...profile.display },
+      theme: { ...profile.theme },
+      timer: { ...profile.timer },
+    };
+
+    setProfiles((current) => [...current, duplicate]);
+    setActiveProfileId(duplicate.id);
+  }, []);
+
+  const handleDeleteProfile = useCallback(
+    (profileId: string) => {
+      if (profiles.length <= 1) {
+        return;
+      }
+
+      setProfiles((current) => {
+        const nextProfiles = current.filter((profile) => profile.id !== profileId);
+        if (profileId === activeProfileId) {
+          setActiveProfileId(nextProfiles[0]?.id ?? defaultProfiles[0].id);
+        }
+        return nextProfiles;
+      });
+    },
+    [activeProfileId, profiles.length],
+  );
+
+  const handleOpenExternal = useCallback((url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }, []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
@@ -486,6 +749,74 @@ export function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleFullscreen, handlePause, handleReset, handleResume, handleStart, runState, view]);
+
+  useEffect(() => {
+    if (!activeProfile.voice.voiceControl) {
+      return undefined;
+    }
+
+    const SpeechRecognition =
+      (window as typeof window & {
+        SpeechRecognition?: new () => DesktopSpeechRecognition;
+        webkitSpeechRecognition?: new () => DesktopSpeechRecognition;
+      }).SpeechRecognition ??
+      (window as typeof window & {
+        webkitSpeechRecognition?: new () => DesktopSpeechRecognition;
+      }).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setVoiceHint("Voice control is not available");
+      return undefined;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = activeLanguage.speechLang;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .slice(event.resultIndex)
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ")
+        .toLowerCase();
+
+      if (!transcript) {
+        return;
+      }
+
+      setVoiceHint(transcript);
+
+      if (/\b(start|fight|go|resume|begin)\b/.test(transcript)) {
+        if (runState === "paused") {
+          handleResume();
+        } else if (runState !== "running") {
+          handleStart();
+        }
+      }
+
+      if (/\b(pause|stop)\b/.test(transcript) && runState === "running") {
+        handlePause();
+      }
+
+      if (/\b(reset|restart)\b/.test(transcript)) {
+        handleReset();
+      }
+    };
+
+    recognition.onerror = () => setVoiceHint("Voice command error");
+    recognition.start();
+
+    return () => recognition.stop();
+  }, [
+    activeLanguage.speechLang,
+    activeProfile.voice.voiceControl,
+    handlePause,
+    handleReset,
+    handleResume,
+    handleStart,
+    runState,
+  ]);
 
   if (view === "settings") {
     return (
@@ -546,7 +877,7 @@ export function App() {
         <Section title="Sound selection">
           {(Object.keys(activeProfile.sounds) as SoundEvent[]).map((event) => (
             <SettingsRow
-              detail={getBuiltInSound(activeProfile.sounds[event]).label}
+              detail={getSoundLabel(activeProfile.sounds[event])}
               key={event}
               label={soundEventLabels[event]}
               onClick={() => {
@@ -558,8 +889,12 @@ export function App() {
         </Section>
 
         <Section title="Language and voice">
-          <SettingsRow detail={language} label="Languages" onClick={() => setView("languages")} />
-          <SettingsRow detail="System voice" label="Voice" onClick={() => setView("voice")} />
+          <SettingsRow detail={activeLanguage.label} label="Languages" onClick={() => setView("languages")} />
+          <SettingsRow
+            detail={activeProfile.voice.voiceName || "Auto"}
+            label="Voice"
+            onClick={() => setView("voice")}
+          />
           <ToggleRow
             checked={activeProfile.voice.announceRound}
             detail="Voice announces the round number at the start"
@@ -610,12 +945,28 @@ export function App() {
         </Section>
 
         <Section title="About">
-          <IconRow label="Website" value="matclock.online" />
+          <IconRow
+            label="Website"
+            value="matclock.online"
+            onClick={() => handleOpenExternal("https://matclock.online")}
+          />
           <IconRow label="Rate" value="Coming soon" />
-          <IconRow label="Share" value="Coming soon" />
-          <IconRow label="Contact developers" value="support@matclock.online" />
-          <IconRow label="Privacy Policy" value="Local profiles only" />
-          <IconRow label="Version" value="0.1.0" />
+          <IconRow
+            label="Share"
+            value="matclock.online"
+            onClick={() => handleOpenExternal("https://matclock.online")}
+          />
+          <IconRow
+            label="Contact developers"
+            value="support@matclock.online"
+            onClick={() => handleOpenExternal("mailto:support@matclock.online")}
+          />
+          <IconRow
+            label="Privacy Policy"
+            value="Local profiles only"
+            onClick={() => handleOpenExternal("https://matclock.online/privacy")}
+          />
+          <IconRow label="Version" value={APP_VERSION} />
         </Section>
       </SettingsLayout>
     );
@@ -630,21 +981,42 @@ export function App() {
       >
         <div className="mat-list">
           {profiles.map((profile) => (
-            <button
+            <div
               className="profile-select-row"
               key={profile.id}
-              type="button"
-              onClick={() => handleSelectProfile(profile.id)}
             >
               <span>
-                <strong>{profile.name}</strong>
+                <input
+                  aria-label="Profile name"
+                  type="text"
+                  value={profile.name}
+                  onChange={(event) => handleRenameProfile(profile.id, event.target.value)}
+                />
                 <small>
                 Round: {formatTime(profile.timer.roundSeconds)} / Rest:{" "}
                   {formatTime(profile.timer.restSeconds)}
                 </small>
               </span>
-              {profile.id === activeProfile.id && <b>Selected</b>}
-            </button>
+              <div className="profile-actions">
+                {profile.id === activeProfile.id ? (
+                  <b>Selected</b>
+                ) : (
+                  <button type="button" onClick={() => handleSelectProfile(profile.id)}>
+                    Select
+                  </button>
+                )}
+                <button type="button" onClick={() => handleDuplicateProfile(profile)}>
+                  Duplicate
+                </button>
+                <button
+                  disabled={profiles.length <= 1}
+                  type="button"
+                  onClick={() => handleDeleteProfile(profile.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       </SettingsLayout>
@@ -688,15 +1060,21 @@ export function App() {
   }
 
   if (view === "soundPicker") {
+    const soundOptions = [...builtInSounds, ...customSounds.map((sound) => ({
+      id: sound.id,
+      label: sound.label,
+      file: sound.path,
+    }))];
+
     return (
       <SettingsLayout
-        action={<button className="accent-small" type="button">+ Add</button>}
+        action={<button className="accent-small" type="button" onClick={handleAddCustomSound}>+ Add</button>}
         title={soundEventLabels[selectedSoundEvent]}
         onBack={() => setView("settings")}
       >
         <h2 className="settings-subtitle">Built-in sounds</h2>
         <div className="mat-list">
-          {builtInSounds.map((sound) => (
+          {soundOptions.map((sound) => (
             <button
               className="choice-row"
               key={sound.id}
@@ -720,14 +1098,14 @@ export function App() {
       <SettingsLayout title="Languages" onBack={() => setView("settings")}>
         <div className="mat-list">
           {languages.map((item) => (
-            <label className="radio-row" key={item}>
+            <label className="radio-row" key={item.id}>
               <input
-                checked={item === language}
+                checked={item.id === language}
                 name="language"
                 type="radio"
-                onChange={() => setLanguage(item)}
+                onChange={() => setLanguage(item.id)}
               />
-              <span>{item}</span>
+              <span>{item.label}</span>
             </label>
           ))}
         </div>
@@ -736,14 +1114,36 @@ export function App() {
   }
 
   if (view === "voice") {
+    const matchingVoices = voices.filter((voice) =>
+      voice.lang.toLowerCase().startsWith(activeLanguage.speechLang.slice(0, 2).toLowerCase()),
+    );
+    const voiceOptions = matchingVoices.length > 0 ? matchingVoices : voices;
+
     return (
       <SettingsLayout title="Voice" onBack={() => setView("settings")}>
         <div className="voice-placeholder">
           <p>
             To add voices in more languages, install speech language packs in Windows settings.
           </p>
-          <button className="secondary-action" type="button">Open speech settings</button>
+          <button
+            className="secondary-action"
+            type="button"
+            onClick={() => handleOpenExternal("ms-settings:speech")}
+          >
+            Open speech settings
+          </button>
         </div>
+        <Section title="System voices">
+          <SelectRow
+            label="Voice"
+            options={["Auto", ...voiceOptions.map((voice) => voice.name)]}
+            value={activeProfile.voice.voiceName || "Auto"}
+            onChange={(voiceName) => updateVoice({ voiceName: voiceName === "Auto" ? "" : voiceName })}
+          />
+          <button className="wide-reset" type="button" onClick={() => speak("Round one")}>
+            Test voice
+          </button>
+        </Section>
       </SettingsLayout>
     );
   }
@@ -879,7 +1279,10 @@ export function App() {
   }
 
   return (
-    <main className="app-frame matclock-desktop" style={timerStyle}>
+    <main
+      className={`app-frame matclock-desktop theme-${resolveTheme(activeProfile.theme.mode)}`}
+      style={timerStyle}
+    >
       <header className="window-titlebar">
         <strong>MatClock</strong>
         <nav>
@@ -917,14 +1320,21 @@ export function App() {
 
             <div className="timer-core">
               <span className="round-label">
-                {phaseLabels[displayedPhase]} / {String(snapshot.round).padStart(2, "0")}/
-                {String(activeProfile.timer.rounds).padStart(2, "0")}
+                {activeProfile.display.showRoundNumber
+                  ? `${phaseLabels[displayedPhase]} / ${String(snapshot.round).padStart(2, "0")}/${String(
+                      activeProfile.timer.rounds,
+                    ).padStart(2, "0")}`
+                  : phaseLabels[displayedPhase]}
               </span>
               <div className="timer-face" aria-live="polite">
                 {formatTime(snapshot.remaining)}
               </div>
             </div>
           </div>
+
+          {activeProfile.display.showVoiceHints && activeProfile.voice.voiceControl && voiceHint && (
+            <p className="voice-hint">{voiceHint}</p>
+          )}
 
           <div className="control-row">
             {(runState === "idle" || runState === "finished") && (
@@ -977,6 +1387,14 @@ function getNumberColor(profile: Profile, phase: TimerPhase | "paused") {
     return profile.theme.restColor;
   }
   return "#ffffff";
+}
+
+function resolveTheme(mode: Profile["theme"]["mode"]) {
+  if (mode === "system") {
+    return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+
+  return mode;
 }
 
 function KeyBadge({ children }: { children: string }) {
@@ -1035,13 +1453,35 @@ function SettingsRow({
   );
 }
 
-function IconRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="settings-row is-static">
+function IconRow({
+  label,
+  value,
+  onClick,
+}: {
+  label: string;
+  value: string;
+  onClick?: () => void;
+}) {
+  const content = (
+    <>
       <span>
         <strong>{label}</strong>
       </span>
       <small>{value}</small>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button className="settings-row is-static" type="button" onClick={onClick}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div className="settings-row is-static">
+      {content}
     </div>
   );
 }

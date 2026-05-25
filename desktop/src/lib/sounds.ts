@@ -48,5 +48,9 @@ export function getSoundFile(soundId: string) {
 }
 
 export function normalizeSoundId(soundId: string, fallback: string) {
+  if (soundId?.startsWith("custom:")) {
+    return soundId;
+  }
+
   return builtInSounds.some((sound) => sound.id === soundId) ? soundId : fallback;
 }

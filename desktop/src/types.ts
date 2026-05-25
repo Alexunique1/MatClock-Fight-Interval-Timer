@@ -30,6 +30,7 @@ export type VoiceSettings = {
   roundCountdownSeconds: number;
   restCountdownSeconds: number;
   voiceControl: boolean;
+  voiceName: string;
 };
 
 export type DisplaySettings = {

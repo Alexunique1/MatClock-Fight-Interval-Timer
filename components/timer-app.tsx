@@ -177,7 +177,7 @@ export function TimerApp() {
 
     startAudio.current = new Audio("/sounds/start.mp3");
     warningAudio.current = new Audio("/sounds/warning.mp3");
-    endAudio.current = new Audio("/sounds/end.mp3");
+    endAudio.current = new Audio("/sounds/start.mp3");
   }, []);
 
   useEffect(() => {

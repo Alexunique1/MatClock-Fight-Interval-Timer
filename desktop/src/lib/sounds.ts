@@ -34,8 +34,8 @@ export const soundEventLabels: Record<SoundEvent, string> = {
   roundStart: "Round start",
   restStart: "Rest start",
   finish: "Finish",
-  roundWarning: "Round warning",
-  restWarning: "Rest warning",
+  roundWarning: "Before round end",
+  restWarning: "Before rest end",
   intervalSignal: "Interval signal",
 };
 

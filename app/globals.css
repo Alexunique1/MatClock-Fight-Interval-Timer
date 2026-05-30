@@ -644,6 +644,25 @@ a {
   line-height: 1.7;
 }
 
+.policy-content h2 {
+  margin: 28px 0 10px;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.policy-content ul {
+  margin: 10px 0 18px;
+  padding-left: 22px;
+  color: var(--on-surface);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.policy-content li + li {
+  margin-top: 8px;
+}
+
 .policy-card a {
   color: var(--text-primary);
   font-weight: 800;
@@ -659,9 +678,16 @@ a {
 
 .policy-date {
   color: var(--primary) !important;
+  margin: 0;
   font-family: var(--font-mono);
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.policy-date-group {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 20px;
 }
 
 .primary-action:focus-visible,

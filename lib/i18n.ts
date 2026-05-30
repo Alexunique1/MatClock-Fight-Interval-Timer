@@ -117,8 +117,8 @@ export const dictionaries = {
     cookies: "Cookie Policy",
     social: "Social",
     language: "Language",
-    policyUpdated: "Last updated: May 24, 2026",
-    privacyTitle: "Privacy Policy",
+    policyUpdated: "Last updated: May 30, 2026",
+    privacyTitle: "Privacy Policy for MatClock",
     cookiesTitle: "Cookie Policy",
     privacyBody:
       "MatClock is a free interval timer. The web version does not require an account. Timer settings may be stored locally in your browser so the app can remember your last configuration. We may add privacy-respecting analytics and advertising tools later, and this policy will be updated before those tools are enabled.",

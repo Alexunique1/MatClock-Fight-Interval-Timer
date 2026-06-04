@@ -425,7 +425,12 @@ export function TimerApp() {
             <a href="#stores" aria-label="Get it on Google Play">
               <img src="/images/badges/google-play.png" alt="Get it on Google Play" />
             </a>
-            <a href="#desktop" aria-label="Get it from Microsoft Store">
+            <a
+              href="https://apps.microsoft.com/detail/9PP18VZ1FV5M?hl=neutral&gl=BG&ocid=pdpshare"
+              aria-label="Get it from Microsoft Store"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/images/badges/microsoft-store.svg" alt="Get it from Microsoft Store" />
             </a>
           </div>

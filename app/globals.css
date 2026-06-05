@@ -237,6 +237,10 @@ a {
   transition: filter 160ms ease, transform 160ms ease;
 }
 
+.store-badges a[hidden] {
+  display: none;
+}
+
 .store-badges a:hover {
   filter: brightness(1.08);
   transform: translateY(-1px);

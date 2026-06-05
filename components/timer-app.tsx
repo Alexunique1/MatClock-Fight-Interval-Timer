@@ -419,7 +419,7 @@ export function TimerApp() {
 
         <section className="timer-center" aria-label={dictionary.title}>
           <div className="store-badges" id="stores">
-            <a href="#stores" aria-label="Download on the App Store">
+            <a href="#stores" aria-label="Download on the App Store" hidden>
               <img src="/images/badges/app-store.svg" alt="Download on the App Store" />
             </a>
             <a href="#stores" aria-label="Get it on Google Play">

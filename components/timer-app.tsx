@@ -17,7 +17,6 @@ import {
   getTotalDuration,
   TimerSettings,
 } from "@/lib/timer";
-import { AboutSection } from "./about-section";
 import { PwaRegister } from "./pwa-register";
 import { SiteFooter } from "./site-footer";
 
@@ -168,6 +167,12 @@ export function TimerApp() {
 
     audio.currentTime = 0;
     audio.play().catch(() => undefined);
+  }, []);
+
+  useEffect(() => {
+    if (window.location.hash === "#about") {
+      window.location.replace("/about");
+    }
   }, []);
 
   useEffect(() => {
@@ -395,7 +400,7 @@ export function TimerApp() {
         </a>
         <nav className="desktop-nav" aria-label="Primary">
           <a href="#timer">{dictionary.home}</a>
-          <a href="#about">{dictionary.about}</a>
+          <a href="/about">{dictionary.about}</a>
         </nav>
         <div className="header-social" aria-label="Social links">
           <a href="#social-facebook" aria-label="Facebook">
@@ -554,10 +559,7 @@ export function TimerApp() {
       </section>
 
       {!isFullscreen && (
-        <>
-          <AboutSection dictionary={dictionary} />
-          <SiteFooter dictionary={dictionary} locale={locale} onLocaleChange={handleLocaleChange} />
-        </>
+        <SiteFooter dictionary={dictionary} locale={locale} onLocaleChange={handleLocaleChange} />
       )}
     </main>
   );

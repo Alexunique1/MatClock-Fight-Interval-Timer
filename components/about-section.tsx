@@ -1,4 +1,4 @@
-import { Dictionary } from "@/lib/i18n";
+import type { Dictionary } from "@/lib/i18n";
 
 const MICROSOFT_STORE_URL =
   "https://apps.microsoft.com/detail/9PP18VZ1FV5M?hl=neutral&gl=BG&ocid=pdpshare";
@@ -10,7 +10,7 @@ export function AboutSection({ dictionary }: { dictionary: Dictionary }) {
       <div className="about-inner">
         <div className="about-heading">
           <p className="about-kicker">{dictionary.aboutKicker}</p>
-          <h2 id="about-title">{dictionary.aboutHeadline}</h2>
+          <h1 id="about-title">{dictionary.aboutHeadline}</h1>
         </div>
 
         <div className="about-copy">

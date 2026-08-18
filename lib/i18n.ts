@@ -57,6 +57,16 @@ type DictionaryKey =
   | "settings"
   | "totalTime"
   | "about"
+  | "aboutKicker"
+  | "aboutHeadline"
+  | "aboutIntro"
+  | "aboutOrigins"
+  | "aboutFeedback"
+  | "aboutThanks"
+  | "aboutYoutube"
+  | "aboutInstall"
+  | "aboutShareFeedback"
+  | "aboutWatchYoutube"
   | "maximize"
   | "minimize"
   | "install"
@@ -106,6 +116,19 @@ export const dictionaries = {
     settings: "Settings",
     totalTime: "Total Time",
     about: "About",
+    aboutKicker: "About MatClock",
+    aboutHeadline: "Built on the mat, for the mat.",
+    aboutIntro:
+      "We are a father and son who both train Brazilian jiu-jitsu. We created MatClock because we wanted a simple, reliable interval timer for our own rounds, and a useful tool we could share with teammates, coaches, and fellow athletes.",
+    aboutOrigins:
+      "What started on the BJJ mats has grown into a timer for boxing, MMA, Muay Thai, HIIT, and other round-based training.",
+    aboutFeedback:
+      "We use MatClock ourselves and continue improving it with feedback from the community. Try it during your next training session and let us know what works, what could be better, and which features you would like us to add.",
+    aboutThanks: "Thank you for supporting MatClock. Train hard and make every round count.",
+    aboutYoutube: "Follow our BJJ journey and training content on YouTube.",
+    aboutInstall: "Install MatClock",
+    aboutShareFeedback: "Share Feedback",
+    aboutWatchYoutube: "Watch on YouTube",
     maximize: "Maximize",
     minimize: "Minimize",
     install: "Install App",
@@ -156,6 +179,19 @@ export const dictionaries = {
     settings: "Ajustes",
     totalTime: "Tiempo Total",
     about: "Acerca",
+    aboutKicker: "Acerca de MatClock",
+    aboutHeadline: "Creado en el tatami, para el tatami.",
+    aboutIntro:
+      "Somos un padre y un hijo que entrenamos jiu-jitsu brasileño. Creamos MatClock porque queríamos un temporizador de intervalos sencillo y fiable para nuestros propios rounds, y una herramienta útil que pudiéramos compartir con compañeros, entrenadores y otros deportistas.",
+    aboutOrigins:
+      "Lo que comenzó en los tatamis de BJJ se ha convertido en un temporizador para boxeo, MMA, Muay Thai, HIIT y otros entrenamientos por rounds.",
+    aboutFeedback:
+      "Usamos MatClock nosotros mismos y seguimos mejorándolo con los comentarios de la comunidad. Pruébalo en tu próximo entrenamiento y cuéntanos qué funciona, qué podría mejorar y qué funciones te gustaría que añadiéramos.",
+    aboutThanks: "Gracias por apoyar MatClock. Entrena duro y aprovecha cada round.",
+    aboutYoutube: "Sigue nuestro camino en el BJJ y nuestro contenido de entrenamiento en YouTube.",
+    aboutInstall: "Instalar MatClock",
+    aboutShareFeedback: "Enviar comentarios",
+    aboutWatchYoutube: "Ver en YouTube",
     maximize: "Maximizar",
     minimize: "Minimizar",
     install: "Instalar",
@@ -206,6 +242,19 @@ export const dictionaries = {
     settings: "Definições",
     totalTime: "Tempo Total",
     about: "Sobre",
+    aboutKicker: "Sobre o MatClock",
+    aboutHeadline: "Criado no tatame, para o tatame.",
+    aboutIntro:
+      "Somos pai e filho e ambos treinamos jiu-jitsu brasileiro. Criámos o MatClock porque queríamos um temporizador de intervalos simples e fiável para os nossos próprios rounds, e uma ferramenta útil que pudéssemos partilhar com companheiros de treino, treinadores e outros atletas.",
+    aboutOrigins:
+      "O que começou nos tatames de BJJ tornou-se um temporizador para boxe, MMA, Muay Thai, HIIT e outros treinos baseados em rounds.",
+    aboutFeedback:
+      "Nós próprios usamos o MatClock e continuamos a melhorá-lo com o feedback da comunidade. Experimente-o no seu próximo treino e diga-nos o que funciona, o que pode ser melhorado e que funcionalidades gostaria que adicionássemos.",
+    aboutThanks: "Obrigado por apoiar o MatClock. Treine com dedicação e aproveite cada round.",
+    aboutYoutube: "Acompanhe o nosso percurso no BJJ e os nossos conteúdos de treino no YouTube.",
+    aboutInstall: "Instalar MatClock",
+    aboutShareFeedback: "Enviar feedback",
+    aboutWatchYoutube: "Ver no YouTube",
     maximize: "Maximizar",
     minimize: "Minimizar",
     install: "Instalar",
@@ -256,6 +305,19 @@ export const dictionaries = {
     settings: "Configurações",
     totalTime: "Tempo Total",
     about: "Sobre",
+    aboutKicker: "Sobre o MatClock",
+    aboutHeadline: "Criado no tatame, para o tatame.",
+    aboutIntro:
+      "Somos pai e filho e os dois treinamos jiu-jitsu brasileiro. Criamos o MatClock porque queríamos um timer de intervalos simples e confiável para os nossos próprios rounds, além de uma ferramenta útil que pudéssemos compartilhar com colegas de treino, treinadores e outros atletas.",
+    aboutOrigins:
+      "O que começou nos tatames de BJJ se tornou um timer para boxe, MMA, Muay Thai, HIIT e outros treinos baseados em rounds.",
+    aboutFeedback:
+      "Nós mesmos usamos o MatClock e continuamos melhorando o app com o feedback da comunidade. Use no seu próximo treino e conte para nós o que funciona, o que pode melhorar e quais recursos você gostaria que adicionássemos.",
+    aboutThanks: "Obrigado por apoiar o MatClock. Treine com dedicação e faça cada round valer a pena.",
+    aboutYoutube: "Acompanhe nossa jornada no BJJ e nosso conteúdo de treino no YouTube.",
+    aboutInstall: "Instalar MatClock",
+    aboutShareFeedback: "Enviar feedback",
+    aboutWatchYoutube: "Ver no YouTube",
     maximize: "Maximizar",
     minimize: "Minimizar",
     install: "Instalar",
@@ -306,6 +368,19 @@ export const dictionaries = {
     settings: "الإعدادات",
     totalTime: "الوقت الكلي",
     about: "حول",
+    aboutKicker: "حول MatClock",
+    aboutHeadline: "صُنع على البساط، من أجل البساط.",
+    aboutIntro:
+      "نحن أب وابنه، وكلانا يتدرب على الجيوجيتسو البرازيلية. أنشأنا MatClock لأننا أردنا مؤقت فترات بسيطا وموثوقا لجولاتنا، وأداة مفيدة نشاركها مع زملائنا والمدربين والرياضيين الآخرين.",
+    aboutOrigins:
+      "ما بدأ على بساط BJJ أصبح مؤقتا للملاكمة وMMA والمواي تاي وHIIT وغيرها من التدريبات القائمة على الجولات.",
+    aboutFeedback:
+      "نستخدم MatClock بأنفسنا ونواصل تحسينه بفضل ملاحظات المجتمع. جربه في حصتك التدريبية القادمة وأخبرنا بما يعمل جيدا، وما يمكن تحسينه، والميزات التي تود أن نضيفها.",
+    aboutThanks: "شكرا لدعمكم MatClock. تدربوا بجد واستفيدوا من كل جولة.",
+    aboutYoutube: "تابعوا رحلتنا في BJJ ومحتوى تدريباتنا على YouTube.",
+    aboutInstall: "تثبيت MatClock",
+    aboutShareFeedback: "إرسال الملاحظات",
+    aboutWatchYoutube: "شاهد على YouTube",
     maximize: "تكبير",
     minimize: "تصغير",
     install: "تثبيت",
@@ -356,6 +431,19 @@ export const dictionaries = {
     settings: "設定",
     totalTime: "總時間",
     about: "關於",
+    aboutKicker: "關於 MatClock",
+    aboutHeadline: "源自墊上，為墊上而生。",
+    aboutIntro:
+      "我們是一對父子，也都練習巴西柔術。我們打造 MatClock，是因為想為自己的回合訓練做一個簡單可靠的間歇計時器，也希望把這個實用工具分享給隊友、教練和其他運動員。",
+    aboutOrigins:
+      "從 BJJ 墊上開始的想法，如今已發展為適用於拳擊、MMA、泰拳、HIIT 及其他回合制訓練的計時器。",
+    aboutFeedback:
+      "我們自己也使用 MatClock，並持續根據社群意見改進。請在下一次訓練時試用，告訴我們哪些地方好用、哪些地方可以更好，以及你希望我們加入哪些功能。",
+    aboutThanks: "感謝你支持 MatClock。努力訓練，珍惜每一個回合。",
+    aboutYoutube: "在 YouTube 上關注我們的 BJJ 歷程與訓練內容。",
+    aboutInstall: "安裝 MatClock",
+    aboutShareFeedback: "提供意見",
+    aboutWatchYoutube: "前往 YouTube",
     maximize: "最大化",
     minimize: "最小化",
     install: "安裝",
@@ -406,6 +494,19 @@ export const dictionaries = {
     settings: "ตั้งค่า",
     totalTime: "เวลารวม",
     about: "เกี่ยวกับ",
+    aboutKicker: "เกี่ยวกับ MatClock",
+    aboutHeadline: "สร้างจากบนเสื่อ เพื่อการฝึกบนเสื่อ",
+    aboutIntro:
+      "เราเป็นพ่อลูกที่ฝึกบราซิลเลียนยิวยิตสูทั้งคู่ เราสร้าง MatClock เพราะต้องการตัวจับเวลาแบบเป็นช่วงที่เรียบง่ายและเชื่อถือได้สำหรับการซ้อมเป็นยกของเราเอง และเป็นเครื่องมือที่มีประโยชน์ซึ่งแชร์กับเพื่อนร่วมทีม โค้ช และนักกีฬาคนอื่น ๆ ได้",
+    aboutOrigins:
+      "สิ่งที่เริ่มต้นบนเสื่อ BJJ ได้พัฒนาเป็นตัวจับเวลาสำหรับมวยสากล MMA มวยไทย HIIT และการฝึกแบบแบ่งยกประเภทอื่น ๆ",
+    aboutFeedback:
+      "เราใช้ MatClock ด้วยตัวเองและปรับปรุงอย่างต่อเนื่องจากความคิดเห็นของชุมชน ลองใช้ในการฝึกครั้งถัดไป แล้วบอกเราว่าส่วนไหนใช้งานได้ดี ส่วนไหนควรปรับปรุง และอยากให้เราเพิ่มฟีเจอร์ใด",
+    aboutThanks: "ขอบคุณที่สนับสนุน MatClock ฝึกให้เต็มที่และทำทุกยกให้คุ้มค่า",
+    aboutYoutube: "ติดตามเส้นทาง BJJ และเนื้อหาการฝึกของเราบน YouTube",
+    aboutInstall: "ติดตั้ง MatClock",
+    aboutShareFeedback: "ส่งความคิดเห็น",
+    aboutWatchYoutube: "ดูบน YouTube",
     maximize: "ขยาย",
     minimize: "ย่อ",
     install: "ติดตั้ง",
@@ -456,6 +557,19 @@ export const dictionaries = {
     settings: "सेटिंग्स",
     totalTime: "कुल समय",
     about: "परिचय",
+    aboutKicker: "MatClock के बारे में",
+    aboutHeadline: "मैट पर बना, मैट के लिए।",
+    aboutIntro:
+      "हम पिता और पुत्र हैं और दोनों ब्राज़ीलियन जिउ-जित्सु का अभ्यास करते हैं। हमने MatClock बनाया क्योंकि हमें अपने राउंड्स के लिए एक सरल और भरोसेमंद इंटरवल टाइमर चाहिए था, और हम एक उपयोगी टूल अपने साथियों, कोचों और अन्य खिलाड़ियों के साथ साझा करना चाहते थे।",
+    aboutOrigins:
+      "BJJ मैट पर शुरू हुआ यह विचार अब बॉक्सिंग, MMA, मुआय थाई, HIIT और अन्य राउंड-आधारित ट्रेनिंग के लिए एक टाइमर बन गया है।",
+    aboutFeedback:
+      "हम खुद MatClock का उपयोग करते हैं और समुदाय की प्रतिक्रिया के आधार पर इसे लगातार बेहतर बना रहे हैं। अपनी अगली ट्रेनिंग में इसे आज़माएं और हमें बताएं कि क्या अच्छा काम करता है, क्या बेहतर हो सकता है और आप कौन-से फीचर्स जुड़वाना चाहते हैं।",
+    aboutThanks: "MatClock का समर्थन करने के लिए धन्यवाद। मेहनत से ट्रेनिंग करें और हर राउंड को सार्थक बनाएं।",
+    aboutYoutube: "YouTube पर हमारी BJJ यात्रा और ट्रेनिंग सामग्री देखें।",
+    aboutInstall: "MatClock इंस्टॉल करें",
+    aboutShareFeedback: "प्रतिक्रिया भेजें",
+    aboutWatchYoutube: "YouTube पर देखें",
     maximize: "बड़ा करें",
     minimize: "छोटा करें",
     install: "इंस्टॉल",
@@ -506,6 +620,19 @@ export const dictionaries = {
     settings: "Настройки",
     totalTime: "Общее время",
     about: "О проекте",
+    aboutKicker: "О MatClock",
+    aboutHeadline: "Создан на татами, для татами.",
+    aboutIntro:
+      "Мы отец и сын, и оба занимаемся бразильским джиу-джитсу. Мы создали MatClock, потому что хотели получить простой и надежный интервальный таймер для собственных раундов и полезный инструмент, которым можно поделиться с товарищами по команде, тренерами и другими спортсменами.",
+    aboutOrigins:
+      "То, что начиналось на татами BJJ, превратилось в таймер для бокса, MMA, муай-тай, HIIT и других тренировок по раундам.",
+    aboutFeedback:
+      "Мы сами используем MatClock и продолжаем улучшать его с учетом отзывов сообщества. Попробуйте таймер на следующей тренировке и расскажите нам, что работает хорошо, что можно улучшить и какие функции вы хотели бы добавить.",
+    aboutThanks: "Спасибо за поддержку MatClock. Тренируйтесь усердно и цените каждый раунд.",
+    aboutYoutube: "Следите за нашим путем в BJJ и тренировочным контентом на YouTube.",
+    aboutInstall: "Установить MatClock",
+    aboutShareFeedback: "Оставить отзыв",
+    aboutWatchYoutube: "Смотреть на YouTube",
     maximize: "Развернуть",
     minimize: "Свернуть",
     install: "Установить",
@@ -556,6 +683,19 @@ export const dictionaries = {
     settings: "Réglages",
     totalTime: "Temps Total",
     about: "À propos",
+    aboutKicker: "À propos de MatClock",
+    aboutHeadline: "Conçu sur le tatami, pour le tatami.",
+    aboutIntro:
+      "Nous sommes un père et son fils, et nous pratiquons tous les deux le jiu-jitsu brésilien. Nous avons créé MatClock parce que nous voulions un minuteur d'intervalles simple et fiable pour nos propres rounds, ainsi qu'un outil utile à partager avec nos partenaires d'entraînement, les coachs et les autres athlètes.",
+    aboutOrigins:
+      "Ce qui a commencé sur les tatamis de BJJ est devenu un minuteur pour la boxe, le MMA, le Muay Thai, le HIIT et les autres entraînements organisés en rounds.",
+    aboutFeedback:
+      "Nous utilisons MatClock nous-mêmes et continuons à l'améliorer grâce aux retours de la communauté. Essayez-le lors de votre prochaine séance et dites-nous ce qui fonctionne, ce qui pourrait être amélioré et quelles fonctionnalités vous aimeriez voir ajoutées.",
+    aboutThanks: "Merci de soutenir MatClock. Entraînez-vous sérieusement et faites compter chaque round.",
+    aboutYoutube: "Suivez notre parcours en BJJ et nos contenus d'entraînement sur YouTube.",
+    aboutInstall: "Installer MatClock",
+    aboutShareFeedback: "Envoyer un avis",
+    aboutWatchYoutube: "Voir sur YouTube",
     maximize: "Agrandir",
     minimize: "Réduire",
     install: "Installer",

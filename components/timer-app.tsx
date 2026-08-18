@@ -555,7 +555,7 @@ export function TimerApp() {
 
       {!isFullscreen && (
         <>
-          <AboutSection />
+          <AboutSection dictionary={dictionary} />
           <SiteFooter dictionary={dictionary} locale={locale} onLocaleChange={handleLocaleChange} />
         </>
       )}

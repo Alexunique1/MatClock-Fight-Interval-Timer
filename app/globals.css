@@ -29,6 +29,7 @@
 
 html {
   min-height: 100%;
+  overflow-x: clip;
   background: var(--background);
   color: var(--text-primary);
   scroll-behavior: smooth;
@@ -825,6 +826,8 @@ a:focus-visible {
 
 [dir="rtl"] .timer-dashboard,
 [dir="rtl"] .top-app-bar,
+[dir="rtl"] .about-inner,
+[dir="rtl"] .about-actions,
 [dir="rtl"] .footer-grid,
 [dir="rtl"] .setting-stepper {
   direction: rtl;

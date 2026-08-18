@@ -17,6 +17,7 @@ import {
   getTotalDuration,
   TimerSettings,
 } from "@/lib/timer";
+import { AboutSection } from "./about-section";
 import { PwaRegister } from "./pwa-register";
 import { SiteFooter } from "./site-footer";
 
@@ -553,7 +554,10 @@ export function TimerApp() {
       </section>
 
       {!isFullscreen && (
-        <SiteFooter dictionary={dictionary} locale={locale} onLocaleChange={handleLocaleChange} />
+        <>
+          <AboutSection />
+          <SiteFooter dictionary={dictionary} locale={locale} onLocaleChange={handleLocaleChange} />
+        </>
       )}
     </main>
   );

@@ -11,7 +11,7 @@ type SiteFooterProps = {
 
 export function SiteFooter({ dictionary, locale, onLocaleChange }: SiteFooterProps) {
   return (
-    <footer className="site-footer" id="about">
+    <footer className="site-footer">
       <div className="footer-grid">
         <div>
           <p className="footer-brand">MatClock</p>
